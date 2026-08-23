@@ -29,14 +29,18 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 const labelClass = "block text-sm font-medium text-slate-800";
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none";
-const errorInputClass = "border-red-400 focus:border-red-600 focus:ring-red-600";
+const errorInputClass =
+  "border-red-400 focus:border-red-600 focus:ring-red-600";
 
 export function RecordForm({
   action,
   record,
   submitLabel,
 }: {
-  action: (prev: RecordFormState, formData: FormData) => Promise<RecordFormState>;
+  action: (
+    prev: RecordFormState,
+    formData: FormData,
+  ) => Promise<RecordFormState>;
   record?: CocRecord;
   submitLabel: string;
 }) {
@@ -44,7 +48,8 @@ export function RecordForm({
 
   // Prefer what the server echoed back after a rejection, so a failed submit
   // does not silently discard what the admin typed.
-  const initial = (field: RecordField, fallback: string) => state.values?.[field] ?? fallback;
+  const initial = (field: RecordField, fallback: string) =>
+    state.values?.[field] ?? fallback;
 
   const [status, setStatus] = useState<string>(
     initial("cocStatus", record?.cocStatus ?? "Submitted"),
@@ -75,7 +80,10 @@ export function RecordForm({
   return (
     <form action={formAction} className="space-y-5">
       {state.message && !state.ok ? (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+        >
           {state.message}
         </div>
       ) : null}
@@ -87,12 +95,20 @@ export function RecordForm({
         <input
           id="registrationNumber"
           name="registrationNumber"
-          defaultValue={initial("registrationNumber", record?.registrationNumber ?? "")}
+          defaultValue={initial(
+            "registrationNumber",
+            record?.registrationNumber ?? "",
+          )}
           aria-invalid={Boolean(errors.registrationNumber)}
-          aria-describedby={errors.registrationNumber ? "registrationNumber-error" : undefined}
+          aria-describedby={
+            errors.registrationNumber ? "registrationNumber-error" : undefined
+          }
           className={`${inputClass} ${errors.registrationNumber ? errorInputClass : ""}`}
         />
-        <FieldError id="registrationNumber-error" message={errors.registrationNumber} />
+        <FieldError
+          id="registrationNumber-error"
+          message={errors.registrationNumber}
+        />
       </div>
 
       <div>
@@ -102,12 +118,20 @@ export function RecordForm({
         <input
           id="cooperativeName"
           name="cooperativeName"
-          defaultValue={initial("cooperativeName", record?.cooperativeName ?? "")}
+          defaultValue={initial(
+            "cooperativeName",
+            record?.cooperativeName ?? "",
+          )}
           aria-invalid={Boolean(errors.cooperativeName)}
-          aria-describedby={errors.cooperativeName ? "cooperativeName-error" : undefined}
+          aria-describedby={
+            errors.cooperativeName ? "cooperativeName-error" : undefined
+          }
           className={`${inputClass} ${errors.cooperativeName ? errorInputClass : ""}`}
         />
-        <FieldError id="cooperativeName-error" message={errors.cooperativeName} />
+        <FieldError
+          id="cooperativeName-error"
+          message={errors.cooperativeName}
+        />
       </div>
 
       <div>
@@ -124,8 +148,8 @@ export function RecordForm({
           className={`${inputClass} ${errors.accountEmail ? errorInputClass : ""}`}
         />
         <p id="accountEmail-help" className="mt-1 text-xs text-slate-500">
-          The Google account allowed to view this record. Leave blank to keep it visible to
-          administrators only.
+          The Google account allowed to view this record. Leave blank to keep it
+          visible to administrators only.
         </p>
         <FieldError id="accountEmail-error" message={errors.accountEmail} />
       </div>
@@ -161,17 +185,29 @@ export function RecordForm({
             id="reasonForDeferment"
             name="reasonForDeferment"
             rows={3}
-            defaultValue={initial("reasonForDeferment", record?.reasonForDeferment ?? "")}
+            defaultValue={initial(
+              "reasonForDeferment",
+              record?.reasonForDeferment ?? "",
+            )}
             aria-invalid={Boolean(errors.reasonForDeferment)}
             aria-describedby={
-              errors.reasonForDeferment ? "reasonForDeferment-error" : "reasonForDeferment-help"
+              errors.reasonForDeferment
+                ? "reasonForDeferment-error"
+                : "reasonForDeferment-help"
             }
             className={`${inputClass} ${errors.reasonForDeferment ? errorInputClass : ""}`}
           />
-          <p id="reasonForDeferment-help" className="mt-1 text-xs text-slate-500">
-            Shown to the cooperative on their dashboard, so write it for them to read.
+          <p
+            id="reasonForDeferment-help"
+            className="mt-1 text-xs text-slate-500"
+          >
+            Shown to the cooperative on their dashboard, so write it for them to
+            read.
           </p>
-          <FieldError id="reasonForDeferment-error" message={errors.reasonForDeferment} />
+          <FieldError
+            id="reasonForDeferment-error"
+            message={errors.reasonForDeferment}
+          />
         </div>
       ) : (
         // Kept in the payload while hidden so switching away from Deferred and
@@ -179,7 +215,10 @@ export function RecordForm({
         <input
           type="hidden"
           name="reasonForDeferment"
-          value={initial("reasonForDeferment", record?.reasonForDeferment ?? "")}
+          value={initial(
+            "reasonForDeferment",
+            record?.reasonForDeferment ?? "",
+          )}
         />
       )}
 
@@ -190,7 +229,10 @@ export function RecordForm({
         <input
           id="reportSubmissionStatus"
           name="reportSubmissionStatus"
-          defaultValue={initial("reportSubmissionStatus", record?.reportSubmissionStatus ?? "")}
+          defaultValue={initial(
+            "reportSubmissionStatus",
+            record?.reportSubmissionStatus ?? "",
+          )}
           className={inputClass}
         />
       </div>

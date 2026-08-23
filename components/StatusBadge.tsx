@@ -1,4 +1,8 @@
-import { COC_STATUS_BADGE, UNKNOWN_STATUS_BADGE, isCocStatus } from "@/lib/constants";
+import {
+  COC_STATUS_BADGE,
+  UNKNOWN_STATUS_BADGE,
+  isCocStatus,
+} from "@/lib/constants";
 
 /**
  * A COC status pill.
@@ -24,7 +28,9 @@ export function StatusBadge({ status }: { status: string }) {
     );
   }
 
-  const classes = isCocStatus(trimmed) ? COC_STATUS_BADGE[trimmed] : UNKNOWN_STATUS_BADGE;
+  const classes = isCocStatus(trimmed)
+    ? COC_STATUS_BADGE[trimmed]
+    : UNKNOWN_STATUS_BADGE;
 
   return (
     <span

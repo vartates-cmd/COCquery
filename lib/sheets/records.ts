@@ -375,9 +375,13 @@ export async function bulkUpdateRecords(
     for (const row of rows) byId.set(text(row.get(H.id)), row);
 
     const targets = updates
-      .map((update) => ({ input: update.input, row: byId.get(text(update.id)) }))
-      .filter((target): target is { input: RecordInput; row: GoogleSpreadsheetRow } =>
-        Boolean(target.row),
+      .map((update) => ({
+        input: update.input,
+        row: byId.get(text(update.id)),
+      }))
+      .filter(
+        (target): target is { input: RecordInput; row: GoogleSpreadsheetRow } =>
+          Boolean(target.row),
       );
 
     if (targets.length === 0) return 0;
@@ -385,7 +389,9 @@ export async function bulkUpdateRecords(
     const rowNumbers = targets.map((target) => target.row.rowNumber);
     const firstRow = Math.min(...rowNumbers);
     const lastRow = Math.max(...rowNumbers);
-    const lastColumn = String.fromCharCode("A".charCodeAt(0) + DATA_HEADERS.length - 1);
+    const lastColumn = String.fromCharCode(
+      "A".charCodeAt(0) + DATA_HEADERS.length - 1,
+    );
 
     await sheet.loadCells(`A${firstRow}:${lastColumn}${lastRow}`);
 

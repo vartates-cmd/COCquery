@@ -12,8 +12,8 @@ export default async function ImportPage() {
         Bulk import
       </h1>
       <p className="mt-1 mb-6 text-sm text-slate-600">
-        Add or update many records at once from a spreadsheet export. You will see exactly what
-        will happen before anything is written.
+        Add or update many records at once from a spreadsheet export. You will
+        see exactly what will happen before anything is written.
       </p>
 
       <ImportWizard />

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc; /* slate-50, matching the page shells */
+  --foreground: #0f172a; /* slate-900 */
 }
 
 @theme inline {
@@ -12,15 +12,65 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/*
+ * This interface is deliberately light-only.
+ *
+ * The scaffold shipped a prefers-color-scheme block that flipped these two
+ * variables to near-black, but every component is written with explicit light
+ * colours (bg-white, text-slate-900). Honouring the dark preference here only
+ * changed the body behind the panels, which is a half-applied dark mode — worse
+ * than none, because it looks broken rather than themed. If dark mode is wanted
+ * later it needs doing properly across the components, not just here.
+ */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /*
+   * The layout loads Geist and exposes it as --font-geist-sans. The scaffold's
+   * default `font-family: Arial` silently overrode it, so the whole app was
+   * rendering in the fallback.
+   */
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/*
+ * A visible focus ring on everything reachable by keyboard.
+ *
+ * Individual components set their own rings in places, but relying on that
+ * means every new button is one forgotten class away from being invisible to
+ * keyboard users. This is the floor.
+ */
+:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip link: off-screen until focused, then pinned to the top-left. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 0.5rem;
+}
+
+/* Respect a reduced-motion preference for the few transitions in the UI. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

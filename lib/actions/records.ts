@@ -39,10 +39,18 @@ function validationFailure(
     // noise, not help.
     if (field && !fieldErrors[field]) fieldErrors[field] = issue.message;
   }
-  return { ok: false, message: "Please correct the highlighted fields.", fieldErrors, values };
+  return {
+    ok: false,
+    message: "Please correct the highlighted fields.",
+    fieldErrors,
+    values,
+  };
 }
 
-function writeFailure(error: unknown, values: Record<RecordField, string>): RecordFormState {
+function writeFailure(
+  error: unknown,
+  values: Record<RecordField, string>,
+): RecordFormState {
   if (error instanceof DuplicateRegistrationError) {
     return {
       ok: false,
@@ -59,7 +67,11 @@ function writeFailure(error: unknown, values: Record<RecordField, string>): Reco
   }
 
   console.error("[action] unexpected failure:", error);
-  return { ok: false, message: "Something went wrong. Please try again.", values };
+  return {
+    ok: false,
+    message: "Something went wrong. Please try again.",
+    values,
+  };
 }
 
 export async function createRecordAction(
@@ -117,9 +129,13 @@ export async function deleteRecordAction(
   try {
     await deleteRecord(id);
   } catch (error) {
-    if (error instanceof SheetsError) return { ok: false, message: error.userMessage };
+    if (error instanceof SheetsError)
+      return { ok: false, message: error.userMessage };
     console.error("[action] delete failed:", error);
-    return { ok: false, message: "Could not delete that record. Please try again." };
+    return {
+      ok: false,
+      message: "Could not delete that record. Please try again.",
+    };
   }
 
   redirect("/admin/records?saved=deleted");

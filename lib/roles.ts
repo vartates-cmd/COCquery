@@ -24,7 +24,9 @@ export function normalizeEmail(email?: string | null): string {
 }
 
 export function bootstrapAdminEmails(): string[] {
-  return env.BOOTSTRAP_ADMIN_EMAILS.split(",").map(normalizeEmail).filter(Boolean);
+  return env.BOOTSTRAP_ADMIN_EMAILS.split(",")
+    .map(normalizeEmail)
+    .filter(Boolean);
 }
 
 export function isBootstrapAdmin(email: string): boolean {
@@ -42,15 +44,19 @@ export function isBootstrapAdmin(email: string): boolean {
  * this function will not guess, because guessing here means either locking out
  * a legitimate admin or letting in a stranger.
  */
-export async function resolveRole(rawEmail?: string | null): Promise<RoleResolution> {
+export async function resolveRole(
+  rawEmail?: string | null,
+): Promise<RoleResolution> {
   const email = normalizeEmail(rawEmail);
   if (!email) return { role: "denied", reason: "NO_EMAIL_FROM_GOOGLE" };
 
-  if (isBootstrapAdmin(email)) return { role: "admin", reason: "BOOTSTRAP_ADMIN" };
+  if (isBootstrapAdmin(email))
+    return { role: "admin", reason: "BOOTSTRAP_ADMIN" };
   if (await isAdminEmail(email)) return { role: "admin", reason: "ADMINS_TAB" };
 
   const records = await getRecordsByEmail(email);
-  if (records.length > 0) return { role: "user", reason: "EMAIL_MAPPED_TO_RECORD" };
+  if (records.length > 0)
+    return { role: "user", reason: "EMAIL_MAPPED_TO_RECORD" };
 
   return { role: "denied", reason: "EMAIL_NOT_MAPPED" };
 }

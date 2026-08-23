@@ -6,7 +6,8 @@ export const metadata = {
   // absolute: the landing page is the app name itself, so it must not get the
   // "%s — COC & Reports Submission Status" template appended to it.
   title: { absolute: "COC & Reports Submission Status" },
-  description: "Check the status of your Certificate of Compliance and report submissions.",
+  description:
+    "Check the status of your Certificate of Compliance and report submissions.",
 };
 
 export default async function LandingPage() {
@@ -14,14 +15,18 @@ export default async function LandingPage() {
   if (session?.user?.role) redirect(homePathForRole(session.user.role));
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12"
+    >
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
           COC &amp; Reports Submission Status
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
-          Sign in with the Google account registered with the office to view the status of
-          your Certificate of Compliance and report submissions.
+          Sign in with the Google account registered with the office to view the
+          status of your Certificate of Compliance and report submissions.
         </p>
 
         <form
@@ -41,8 +46,8 @@ export default async function LandingPage() {
         </form>
 
         <p className="mt-6 text-xs leading-relaxed text-slate-500">
-          Access is granted by the office. If your account is not recognised, contact the
-          office to have it registered.
+          Access is granted by the office. If your account is not recognised,
+          contact the office to have it registered.
         </p>
       </div>
     </main>

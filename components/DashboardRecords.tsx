@@ -38,7 +38,10 @@ export function DashboardRecords({ records }: { records: CocRecord[] }) {
   return (
     <div>
       <div className="mb-4">
-        <label htmlFor={searchId} className="block text-sm font-medium text-slate-700">
+        <label
+          htmlFor={searchId}
+          className="block text-sm font-medium text-slate-700"
+        >
           Search your records
         </label>
         <input
@@ -81,7 +84,8 @@ export function DashboardRecords({ records }: { records: CocRecord[] }) {
                       {record.cooperativeName.trim() || "Unnamed cooperative"}
                     </span>
                     <span className="mt-0.5 block truncate font-mono text-xs text-slate-500">
-                      {record.registrationNumber.trim() || "No registration number"}
+                      {record.registrationNumber.trim() ||
+                        "No registration number"}
                     </span>
                   </span>
 
@@ -95,7 +99,10 @@ export function DashboardRecords({ records }: { records: CocRecord[] }) {
                 </button>
 
                 {isOpen ? (
-                  <div id={panelId} className="border-t border-slate-100 bg-slate-50/50 p-3">
+                  <div
+                    id={panelId}
+                    className="border-t border-slate-100 bg-slate-50/50 p-3"
+                  >
                     <RecordCard record={record} />
                   </div>
                 ) : null}

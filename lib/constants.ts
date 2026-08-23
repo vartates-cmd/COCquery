@@ -39,20 +39,28 @@ export const COC_STATUS_BADGE: Record<CocStatus, string> = {
 };
 
 /** Fallback for a status the sheet contains but this app does not recognise. */
-export const UNKNOWN_STATUS_BADGE = "bg-slate-100 text-slate-700 ring-slate-500/20";
+export const UNKNOWN_STATUS_BADGE =
+  "bg-slate-100 text-slate-700 ring-slate-500/20";
 
 export function isCocStatus(value: unknown): value is CocStatus {
-  return typeof value === "string" && (COC_STATUSES as readonly string[]).includes(value);
+  return (
+    typeof value === "string" &&
+    (COC_STATUSES as readonly string[]).includes(value)
+  );
 }
 
 /**
  * Case-insensitive, whitespace-tolerant match back to the canonical spelling.
  * Used by the Phase 7 importer, where a CSV might say "deferred" or "APPROVED".
  */
-export function normalizeCocStatus(value: string | null | undefined): CocStatus | null {
+export function normalizeCocStatus(
+  value: string | null | undefined,
+): CocStatus | null {
   const candidate = (value ?? "").trim().toLowerCase();
   if (!candidate) return null;
-  return COC_STATUSES.find((status) => status.toLowerCase() === candidate) ?? null;
+  return (
+    COC_STATUSES.find((status) => status.toLowerCase() === candidate) ?? null
+  );
 }
 
 /** Statuses whose meaning depends on the Reason for Deferment field. */
@@ -92,7 +100,11 @@ export const LOGIN_ATTEMPT_HEADERS = [
 export const CONFIG_HEADERS = ["Key", "Value"] as const;
 
 /** Values written to the Result column of LoginAttempts. */
-export const LOGIN_RESULTS = ["DENIED", "ALLOWED_USER", "ALLOWED_ADMIN"] as const;
+export const LOGIN_RESULTS = [
+  "DENIED",
+  "ALLOWED_USER",
+  "ALLOWED_ADMIN",
+] as const;
 export type LoginResult = (typeof LOGIN_RESULTS)[number];
 
 export const LOGIN_RESULT_BADGE: Record<LoginResult, string> = {

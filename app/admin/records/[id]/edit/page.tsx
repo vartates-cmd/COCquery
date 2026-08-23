@@ -1,16 +1,35 @@
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/guards";
 import { updateRecordAction } from "@/lib/actions/records";
+import { load } from "@/lib/safe";
 import { getRecordById } from "@/lib/sheets/records";
+import { DataUnavailable } from "@/components/DataUnavailable";
 import { RecordForm } from "@/components/RecordForm";
 
 export const metadata = { title: "Edit record" };
 
-export default async function EditRecordPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditRecordPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   await requireAdmin();
 
   const { id } = await params;
-  const record = await getRecordById(id);
+  const result = await load(() => getRecordById(id));
+
+  // A failure to reach the sheet is not the same as a missing record: one is
+  // our problem, the other is a 404. Telling them apart matters, because
+  // "record not found" would send an admin looking for a record that is fine.
+  if (!result.ok) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <DataUnavailable message={result.message} kind={result.kind} />
+      </div>
+    );
+  }
+
+  const record = result.data;
 
   // A record can vanish between the table rendering and this page loading, and
   // a UUID can be typed wrong. Either way this is a 404, not an error.
@@ -31,7 +50,11 @@ export default async function EditRecordPage({ params }: { params: Promise<{ id:
       </p>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-        <RecordForm action={action} record={record} submitLabel="Save changes" />
+        <RecordForm
+          action={action}
+          record={record}
+          submitLabel="Save changes"
+        />
       </div>
     </div>
   );

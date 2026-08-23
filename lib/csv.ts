@@ -46,7 +46,10 @@ const FIELD_BY_HEADER_KEY: Record<string, RecordField> = {
 /** Columns we ignore rather than report: the app owns these. */
 const IGNORED_HEADER_KEYS = new Set(["id", "dateupdated", "updatedby"]);
 
-function mapRow(input: Record<string, unknown>, unknown: Set<string>): RawImportRow {
+function mapRow(
+  input: Record<string, unknown>,
+  unknown: Set<string>,
+): RawImportRow {
   const row: RawImportRow = {};
 
   for (const [header, value] of Object.entries(input)) {
@@ -103,7 +106,9 @@ export function parseImportFile(text: string, filename: string): ParseResult {
       return {
         rows: [],
         unknownColumns: [],
-        errors: ["The JSON file must contain an array of records, for example [ { ... }, { ... } ]."],
+        errors: [
+          "The JSON file must contain an array of records, for example [ { ... }, { ... } ].",
+        ],
       };
     }
 
@@ -113,7 +118,9 @@ export function parseImportFile(text: string, filename: string): ParseResult {
     );
 
     if (records.length !== parsed.length) {
-      errors.push(`${parsed.length - records.length} entries were skipped because they were not objects.`);
+      errors.push(
+        `${parsed.length - records.length} entries were skipped because they were not objects.`,
+      );
     }
   } else {
     const result = Papa.parse<Record<string, unknown>>(text, {
@@ -125,16 +132,16 @@ export function parseImportFile(text: string, filename: string): ParseResult {
     // Papa reports recoverable quirks too, so only genuine failures are fatal.
     for (const problem of result.errors) {
       if (problem.type === "Delimiter" || problem.type === "Quotes") {
-        errors.push(
-          `Line ${(problem.row ?? 0) + 2}: ${problem.message}`,
-        );
+        errors.push(`Line ${(problem.row ?? 0) + 2}: ${problem.message}`);
       }
     }
 
     records = result.data;
   }
 
-  const rows = records.map((entry) => mapRow(entry, unknown)).filter((row) => !isBlank(row));
+  const rows = records
+    .map((entry) => mapRow(entry, unknown))
+    .filter((row) => !isBlank(row));
 
   if (rows.length > MAX_IMPORT_ROWS) {
     errors.push(

@@ -97,7 +97,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             ? "ALLOWED_USER"
             : "DENIED";
 
-      await recordAttempt({ email, name, result, reason: resolution.reason, ip, userAgent });
+      await recordAttempt({
+        email,
+        name,
+        result,
+        reason: resolution.reason,
+        ip,
+        userAgent,
+      });
 
       if (resolution.role === "denied") return "/access-denied";
       return true;
@@ -117,7 +124,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return token;
       }
 
-      const checkedAt = typeof token.roleCheckedAt === "number" ? token.roleCheckedAt : 0;
+      const checkedAt =
+        typeof token.roleCheckedAt === "number" ? token.roleCheckedAt : 0;
       const isStale = Date.now() - checkedAt > ROLE_RECHECK_MS;
 
       if (isFirstSignIn || isStale) {
@@ -128,7 +136,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         } catch (error) {
           // A transient Sheets failure should not eject someone mid-session.
           // Keep whatever role they already had and try again on the next call.
-          console.error("[auth] role re-check failed, keeping previous role:", error);
+          console.error(
+            "[auth] role re-check failed, keeping previous role:",
+            error,
+          );
           if (!token.role) token.role = "denied";
         }
       }

@@ -16,7 +16,11 @@ export const metadata = { title: "Your records" };
  * There are no links to admin routes here — not hidden by role, simply never
  * rendered. An admin reaching this page navigates by URL.
  */
-export default async function DashboardLayout({ children }: { children: ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const session = await requireUser();
   const name = session.user.name?.trim() || session.user.email;
 
@@ -39,8 +43,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               />
             ) : null}
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-slate-900">{name}</p>
-              <p className="truncate text-xs text-slate-500">{session.user.email}</p>
+              <p className="truncate text-sm font-medium text-slate-900">
+                {name}
+              </p>
+              <p className="truncate text-xs text-slate-500">
+                {session.user.email}
+              </p>
             </div>
           </div>
 
@@ -60,7 +68,13 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">{children}</main>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10"
+      >
+        {children}
+      </main>
     </div>
   );
 }

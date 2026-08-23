@@ -13,7 +13,9 @@ import { StatusBadge } from "@/components/StatusBadge";
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">{label}</dt>
+      <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+        {label}
+      </dt>
       <dd className="mt-1 text-sm text-slate-900">{value.trim() || "—"}</dd>
     </div>
   );
@@ -35,7 +37,9 @@ function formatDate(iso: string): string {
 }
 
 export function RecordCard({ record }: { record: CocRecord }) {
-  const isDeferred = record.cocStatus.trim().toLowerCase() === STATUS_REQUIRING_REASON.toLowerCase();
+  const isDeferred =
+    record.cocStatus.trim().toLowerCase() ===
+    STATUS_REQUIRING_REASON.toLowerCase();
   const reason = record.reasonForDeferment.trim();
   const updated = formatDate(record.dateUpdated);
 
@@ -55,12 +59,17 @@ export function RecordCard({ record }: { record: CocRecord }) {
 
       <dl className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="COC Status" value={record.cocStatus} />
-        <Field label="Report Submission" value={record.reportSubmissionStatus} />
+        <Field
+          label="Report Submission"
+          value={record.reportSubmissionStatus}
+        />
       </dl>
 
       {isDeferred ? (
         <div className="mt-5 rounded-xl border border-purple-200 bg-purple-50 p-4">
-          <h3 className="text-sm font-semibold text-purple-900">Reason for deferment</h3>
+          <h3 className="text-sm font-semibold text-purple-900">
+            Reason for deferment
+          </h3>
           <p className="mt-1 text-sm leading-relaxed text-purple-900">
             {reason ||
               "No reason has been recorded yet. Please contact the office for details on what is needed."}

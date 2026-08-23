@@ -1,20 +1,39 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { COC_STATUSES } from "@/lib/constants";
 import { requireAdmin } from "@/lib/guards";
+import { load } from "@/lib/safe";
 import { listRecords } from "@/lib/sheets/records";
 import { listLoginAttempts } from "@/lib/sheets/attempts";
+import { DataUnavailable } from "@/components/DataUnavailable";
+import { SkeletonRegion, SkeletonStats, SkeletonTable } from "@/components/Skeleton";
 import { StatusBadge } from "@/components/StatusBadge";
 
 export const metadata = { title: "Overview" };
 
-function daysAgo(days: number): number {
-  return Date.now() - days * 24 * 60 * 60 * 1000;
-}
+/**
+ * Suspense lives inside the page rather than in a loading.tsx beside it. See
+ * the note in app/admin/records/page.tsx: a loading.tsx anywhere above
+ * /admin/records/[id]/edit makes that route stream, which flushes a 200 before
+ * it can discover the record is missing.
+ */
+async function OverviewContent() {
+  const [recordsResult, attemptsResult] = await Promise.all([
+    load(() => listRecords()),
+    load(() => listLoginAttempts()),
+  ]);
 
-export default async function AdminOverviewPage() {
-  await requireAdmin();
+  // Checked one at a time rather than combined: TypeScript narrows a union
+  // through a direct `if (!x.ok)` and cannot follow a merged failure variable.
+  if (!recordsResult.ok) {
+    return <DataUnavailable message={recordsResult.message} kind={recordsResult.kind} />;
+  }
+  if (!attemptsResult.ok) {
+    return <DataUnavailable message={attemptsResult.message} kind={attemptsResult.kind} />;
+  }
 
-  const [records, attempts] = await Promise.all([listRecords(), listLoginAttempts()]);
+  const records = recordsResult.data;
+  const attempts = attemptsResult.data;
 
   const counts = new Map<string, number>();
   for (const record of records) {
@@ -22,12 +41,14 @@ export default async function AdminOverviewPage() {
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
 
-  // Statuses in their canonical order first, then anything unexpected the
-  // spreadsheet happens to contain, so a typo is visible rather than lost.
+  // Canonical statuses first, then anything unexpected the spreadsheet happens
+  // to contain, so a typo is visible rather than lost.
   const knownKeys = new Set<string>(COC_STATUSES);
   const extraKeys = [...counts.keys()].filter((key) => !knownKeys.has(key)).sort();
 
-  const cutoff = daysAgo(7);
+  // Reading the clock is fine in a Server Component: it renders once per request.
+  // eslint-disable-next-line react-hooks/purity
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const deniedLastWeek = attempts.filter((attempt) => {
     if (attempt.result !== "DENIED") return false;
     const time = new Date(attempt.timestamp).getTime();
@@ -39,17 +60,12 @@ export default async function AdminOverviewPage() {
     .slice(0, 5);
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">Overview</h1>
-        <p className="mt-1 text-sm text-slate-600">
-          A snapshot of the register and recent sign-in activity.
-        </p>
-      </div>
-
+    <>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">Total records</p>
+          <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+            Total records
+          </p>
           <p className="mt-1 text-2xl font-semibold text-slate-900">{records.length}</p>
         </div>
         <div className="rounded-xl border border-slate-200 bg-white p-4">
@@ -76,7 +92,10 @@ export default async function AdminOverviewPage() {
       <section>
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-slate-900">Recently updated</h2>
-          <Link href="/admin/records" className="text-sm font-medium text-slate-600 hover:text-slate-900">
+          <Link
+            href="/admin/records"
+            className="text-sm font-medium text-slate-600 hover:text-slate-900"
+          >
             View all records
           </Link>
         </div>
@@ -113,6 +132,36 @@ export default async function AdminOverviewPage() {
           </ul>
         )}
       </section>
+    </>
+  );
+}
+
+export default async function AdminOverviewPage() {
+  await requireAdmin();
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+          Overview
+        </h1>
+        <p className="mt-1 text-sm text-slate-600">
+          A snapshot of the register and recent sign-in activity.
+        </p>
+      </div>
+
+      <Suspense
+        fallback={
+          <SkeletonRegion label="Loading overview">
+            <SkeletonStats count={2} />
+            <div className="mt-8">
+              <SkeletonTable rows={5} columns={3} />
+            </div>
+          </SkeletonRegion>
+        }
+      >
+        <OverviewContent />
+      </Suspense>
     </div>
   );
 }

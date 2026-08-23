@@ -80,8 +80,10 @@ export function buildImportPlan(
     const parsed = recordSchema.safeParse(candidate);
     if (!parsed.success) {
       for (const issue of parsed.error.issues) {
-        const message = issue.message;
-        if (!problems.includes(message)) problems.push(message);
+        // The status has already been reported in plainer words above; zod's
+        // generic enum message underneath it just says the same thing twice.
+        if (issue.path[0] === "cocStatus" && problems.length > 0) continue;
+        if (!problems.includes(issue.message)) problems.push(issue.message);
       }
     }
 
@@ -118,7 +120,9 @@ export function buildImportPlan(
         state: "update",
         input: parsed.data,
         existingId: match.id,
-        problems: [`Updates the existing record for ${match.cooperativeName || registrationNumber}`],
+        problems: [
+          `Updates the existing record for ${match.cooperativeName || registrationNumber}`,
+        ],
       };
     }
 

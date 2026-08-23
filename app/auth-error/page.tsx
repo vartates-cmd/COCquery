@@ -40,10 +40,16 @@ export default async function AuthErrorPage({
   const isDev = process.env.NODE_ENV !== "production";
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12"
+    >
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold tracking-tight text-slate-900">
-          {isLookupFailure ? "We could not check your access" : "Sign-in did not complete"}
+          {isLookupFailure
+            ? "We could not check your access"
+            : "Sign-in did not complete"}
         </h1>
 
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
@@ -53,7 +59,8 @@ export default async function AuthErrorPage({
         </p>
 
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
-          Please try again in a moment. If it keeps happening, contact the office.
+          Please try again in a moment. If it keeps happening, contact the
+          office.
         </p>
 
         {code ? (
@@ -67,7 +74,9 @@ export default async function AuthErrorPage({
             <p className="text-xs font-semibold text-amber-900">
               Development note (hidden in production)
             </p>
-            <p className="mt-1 text-xs leading-relaxed text-amber-900">{help}</p>
+            <p className="mt-1 text-xs leading-relaxed text-amber-900">
+              {help}
+            </p>
           </div>
         ) : null}
 

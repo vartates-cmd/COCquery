@@ -8,15 +8,22 @@ const LINKS = [
   { href: "/admin", label: "Overview", exact: true },
   { href: "/admin/records", label: "Records", exact: false },
   { href: "/admin/import", label: "Import", exact: false },
+  { href: "/admin/login-attempts", label: "Sign-in attempts", exact: false },
+  { href: "/admin/admins", label: "Administrators", exact: false },
 ] as const;
 
 export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Administration" className="-mb-px flex gap-1 overflow-x-auto">
+    <nav
+      aria-label="Administration"
+      className="-mb-px flex gap-1 overflow-x-auto"
+    >
       {LINKS.map((link) => {
-        const active = link.exact ? pathname === link.href : pathname.startsWith(link.href);
+        const active = link.exact
+          ? pathname === link.href
+          : pathname.startsWith(link.href);
 
         return (
           <Link

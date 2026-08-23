@@ -30,7 +30,11 @@ export function RecordsTable({ records }: { records: CocRecord[] }) {
     return records.filter((record) => {
       if (status !== "all" && record.cocStatus.trim() !== status) return false;
       if (!needle) return true;
-      return [record.registrationNumber, record.cooperativeName, record.accountEmail]
+      return [
+        record.registrationNumber,
+        record.cooperativeName,
+        record.accountEmail,
+      ]
         .join(" ")
         .toLowerCase()
         .includes(needle);
@@ -43,13 +47,19 @@ export function RecordsTable({ records }: { records: CocRecord[] }) {
   // can leave `page` pointing past the end of a shorter result set; deriving
   // the value here avoids the extra render pass an effect would cause.
   const currentPage = Math.min(page, pageCount);
-  const visible = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const visible = filtered.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
 
   return (
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex-1">
-          <label htmlFor="record-search" className="block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="record-search"
+            className="block text-sm font-medium text-slate-700"
+          >
             Search
           </label>
           <input
@@ -66,7 +76,10 @@ export function RecordsTable({ records }: { records: CocRecord[] }) {
         </div>
 
         <div className="sm:w-56">
-          <label htmlFor="status-filter" className="block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="status-filter"
+            className="block text-sm font-medium text-slate-700"
+          >
             COC status
           </label>
           <select
@@ -104,12 +117,24 @@ export function RecordsTable({ records }: { records: CocRecord[] }) {
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-600 uppercase">
                 <tr>
-                  <th scope="col" className="px-4 py-3 font-medium">Registration</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Cooperative</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Account email</th>
-                  <th scope="col" className="px-4 py-3 font-medium">COC status</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Report</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Updated</th>
+                  <th scope="col" className="px-4 py-3 font-medium">
+                    Registration
+                  </th>
+                  <th scope="col" className="px-4 py-3 font-medium">
+                    Cooperative
+                  </th>
+                  <th scope="col" className="px-4 py-3 font-medium">
+                    Account email
+                  </th>
+                  <th scope="col" className="px-4 py-3 font-medium">
+                    COC status
+                  </th>
+                  <th scope="col" className="px-4 py-3 font-medium">
+                    Report
+                  </th>
+                  <th scope="col" className="px-4 py-3 font-medium">
+                    Updated
+                  </th>
                   <th scope="col" className="px-4 py-3 font-medium">
                     <span className="sr-only">Actions</span>
                   </th>
@@ -118,12 +143,24 @@ export function RecordsTable({ records }: { records: CocRecord[] }) {
               <tbody className="divide-y divide-slate-100">
                 {visible.map((record) => (
                   <tr key={record.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs">{record.registrationNumber || "—"}</td>
-                    <td className="px-4 py-3">{record.cooperativeName || "—"}</td>
-                    <td className="px-4 py-3 text-slate-600">{record.accountEmail || "—"}</td>
-                    <td className="px-4 py-3"><StatusBadge status={record.cocStatus} /></td>
-                    <td className="px-4 py-3 text-slate-600">{record.reportSubmissionStatus || "—"}</td>
-                    <td className="px-4 py-3 text-slate-500">{record.dateUpdated || "—"}</td>
+                    <td className="px-4 py-3 font-mono text-xs">
+                      {record.registrationNumber || "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      {record.cooperativeName || "—"}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {record.accountEmail || "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <StatusBadge status={record.cocStatus} />
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {record.reportSubmissionStatus || "—"}
+                    </td>
+                    <td className="px-4 py-3 text-slate-500">
+                      {record.dateUpdated || "—"}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-2">
                         <Link
@@ -150,7 +187,10 @@ export function RecordsTable({ records }: { records: CocRecord[] }) {
           {/* Stacked cards for phones */}
           <ul className="mt-4 space-y-3 md:hidden">
             {visible.map((record) => (
-              <li key={record.id} className="rounded-xl border border-slate-200 bg-white p-4">
+              <li
+                key={record.id}
+                className="rounded-xl border border-slate-200 bg-white p-4"
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-slate-900">
@@ -224,7 +264,10 @@ export function RecordsTable({ records }: { records: CocRecord[] }) {
       ) : null}
 
       {pendingDelete ? (
-        <DeleteDialog record={pendingDelete} onCancel={() => setPendingDelete(null)} />
+        <DeleteDialog
+          record={pendingDelete}
+          onCancel={() => setPendingDelete(null)}
+        />
       ) : null}
     </div>
   );
@@ -232,8 +275,17 @@ export function RecordsTable({ records }: { records: CocRecord[] }) {
 
 const DELETE_EMPTY: DeleteState = { ok: true };
 
-function DeleteDialog({ record, onCancel }: { record: CocRecord; onCancel: () => void }) {
-  const [state, formAction, isPending] = useActionState(deleteRecordAction, DELETE_EMPTY);
+function DeleteDialog({
+  record,
+  onCancel,
+}: {
+  record: CocRecord;
+  onCancel: () => void;
+}) {
+  const [state, formAction, isPending] = useActionState(
+    deleteRecordAction,
+    DELETE_EMPTY,
+  );
 
   return (
     <div
@@ -243,7 +295,10 @@ function DeleteDialog({ record, onCancel }: { record: CocRecord; onCancel: () =>
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
     >
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <h2 id="delete-title" className="text-base font-semibold text-slate-900">
+        <h2
+          id="delete-title"
+          className="text-base font-semibold text-slate-900"
+        >
           Delete this record?
         </h2>
 
@@ -256,19 +311,22 @@ function DeleteDialog({ record, onCancel }: { record: CocRecord; onCancel: () =>
         </p>
 
         <p className="mt-2 text-sm leading-relaxed text-red-700">
-          This is permanent. The row is removed from the spreadsheet and cannot be recovered from
-          within this app.
+          This is permanent. The row is removed from the spreadsheet and cannot
+          be recovered from within this app.
         </p>
 
         {record.accountEmail ? (
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            It will also remove access for {record.accountEmail}, unless another record is linked
-            to that address.
+            It will also remove access for {record.accountEmail}, unless another
+            record is linked to that address.
           </p>
         ) : null}
 
         {state.message && !state.ok ? (
-          <p role="alert" className="mt-3 rounded-lg bg-red-50 p-2 text-sm text-red-800">
+          <p
+            role="alert"
+            className="mt-3 rounded-lg bg-red-50 p-2 text-sm text-red-800"
+          >
             {state.message}
           </p>
         ) : null}

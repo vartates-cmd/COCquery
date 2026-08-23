@@ -32,5 +32,8 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "description": "COC & Reports Submission Status System"
+  "description": "COC & Reports Submission Status System",
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }

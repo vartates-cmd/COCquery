@@ -13,14 +13,21 @@ import { z } from "zod";
 const envSchema = z.object({
   // Auth.js reads these three by name on its own; we validate them so their
   // absence is caught here rather than as an opaque OAuth failure.
-  AUTH_SECRET: z.string().min(1, "required — generate one with: openssl rand -base64 32"),
+  AUTH_SECRET: z
+    .string()
+    .min(1, "required — generate one with: openssl rand -base64 32"),
   AUTH_URL: z.url("must be a full URL, e.g. http://localhost:3000").optional(),
-  AUTH_GOOGLE_ID: z.string().min(1, "required — OAuth client ID from Google Cloud Console"),
+  AUTH_GOOGLE_ID: z
+    .string()
+    .min(1, "required — OAuth client ID from Google Cloud Console"),
   AUTH_GOOGLE_SECRET: z.string().min(1, "required — OAuth client secret"),
 
   GOOGLE_SHEET_ID: z
     .string()
-    .min(1, "required — the long id in the spreadsheet URL, between /d/ and /edit"),
+    .min(
+      1,
+      "required — the long id in the spreadsheet URL, between /d/ and /edit",
+    ),
   GOOGLE_SERVICE_ACCOUNT_EMAIL: z.email(
     "must be the service account address, ending in .iam.gserviceaccount.com",
   ),
@@ -52,7 +59,9 @@ function loadEnv(): Env {
 
   if (!parsed.success) {
     const problems = parsed.error.issues
-      .map((issue) => `  - ${issue.path.join(".") || "(root)"}: ${issue.message}`)
+      .map(
+        (issue) => `  - ${issue.path.join(".") || "(root)"}: ${issue.message}`,
+      )
       .join("\n");
 
     throw new Error(

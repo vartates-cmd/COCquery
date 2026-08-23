@@ -11,20 +11,25 @@ export const metadata = { title: "Account not registered" };
  */
 export default function AccessDeniedPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12"
+    >
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold tracking-tight text-slate-900">
           This account is not registered
         </h1>
 
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
-          The Google account you signed in with is not linked to any record in this system.
-          That usually just means the office has not added it yet.
+          The Google account you signed in with is not linked to any record in
+          this system. That usually just means the office has not added it yet.
         </p>
 
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
-          Contact the office and ask them to register this email address. If you have more
-          than one Google account, you may have signed in with the wrong one.
+          Contact the office and ask them to register this email address. If you
+          have more than one Google account, you may have signed in with the
+          wrong one.
         </p>
 
         <form

@@ -19,7 +19,9 @@ const MESSAGES: Record<string, string> = {
 export function SavedBanner({ saved }: { saved?: string }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [message, setMessage] = useState(() => (saved ? MESSAGES[saved] : undefined));
+  const [message, setMessage] = useState(() =>
+    saved ? MESSAGES[saved] : undefined,
+  );
 
   useEffect(() => {
     if (!saved || !MESSAGES[saved]) return;

@@ -15,12 +15,16 @@ const emailOrBlank = z
   .trim()
   .transform((value) => value.toLowerCase())
   .refine((value) => value === "" || z.email().safeParse(value).success, {
-    message: "Enter a valid email address, or leave blank for an admin-only record",
+    message:
+      "Enter a valid email address, or leave blank for an admin-only record",
   });
 
 export const recordSchema = z
   .object({
-    registrationNumber: z.string().trim().min(1, "Registration number is required"),
+    registrationNumber: z
+      .string()
+      .trim()
+      .min(1, "Registration number is required"),
     cooperativeName: z.string().trim().min(1, "Cooperative name is required"),
     accountEmail: emailOrBlank,
     cocStatus: z.enum(COC_STATUSES, {
@@ -35,7 +39,9 @@ export const recordSchema = z
    * that actually holds.
    */
   .refine(
-    (data) => data.cocStatus !== STATUS_REQUIRING_REASON || data.reasonForDeferment.length > 0,
+    (data) =>
+      data.cocStatus !== STATUS_REQUIRING_REASON ||
+      data.reasonForDeferment.length > 0,
     {
       message: "A reason is required when the status is Deferred",
       path: ["reasonForDeferment"],
@@ -57,7 +63,9 @@ export const RECORD_FIELDS = [
 export type RecordField = (typeof RECORD_FIELDS)[number];
 
 /** Pull the record fields out of a submitted form, as plain strings. */
-export function readRecordForm(formData: FormData): Record<RecordField, string> {
+export function readRecordForm(
+  formData: FormData,
+): Record<RecordField, string> {
   const values = {} as Record<RecordField, string>;
   for (const field of RECORD_FIELDS) {
     values[field] = String(formData.get(field) ?? "");
